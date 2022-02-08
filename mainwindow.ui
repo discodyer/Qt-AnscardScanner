@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>584</width>
+    <height>634</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QScrollArea" name="scrollArea">
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>276</width>
+         <height>489</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLabel" name="labRawImage">
+          <property name="text">
+           <string>Raw Image</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+    <item>
+     <widget class="QScrollArea" name="scrollArea_2">
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents_2">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>275</width>
+         <height>489</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QLabel" name="labProcessedImage">
+          <property name="text">
+           <string>Processed Image</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>584</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <widget class="QMenu" name="menuOpen">
+     <property name="title">
+      <string>Open</string>
+     </property>
+     <addaction name="actionOpen_a_Folder"/>
+     <addaction name="actionOpen_a_Image"/>
+    </widget>
+    <addaction name="menuOpen"/>
+    <addaction name="actionCamera"/>
+   </widget>
+   <widget class="QMenu" name="menuTool">
+    <property name="title">
+     <string>Tool</string>
+    </property>
+    <widget class="QMenu" name="menuSettings">
+     <property name="title">
+      <string>Settings</string>
+     </property>
+     <addaction name="actionLanguages"/>
+     <addaction name="actionAbout"/>
+     <addaction name="actionSettings"/>
+    </widget>
+    <addaction name="actionPrevious"/>
+    <addaction name="actionNext"/>
+    <addaction name="menuSettings"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuTool"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextUnderIcon</enum>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionOpen"/>
+   <addaction name="actionPrevious"/>
+   <addaction name="actionNext"/>
+   <addaction name="actionCamera"/>
+   <addaction name="actionSettings"/>
+  </widget>
+  <action name="actionOpen">
+   <property name="icon">
+    <iconset theme="/">
+     <activeon>:/folder.png</activeon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Open..</string>
+   </property>
+   <property name="toolTip">
+    <string>Open a folder</string>
+   </property>
+  </action>
+  <action name="actionPrevious">
+   <property name="icon">
+    <iconset resource="Icons/Icons.qrc">
+     <normaloff>:/back_arrow_14447.png</normaloff>
+     <activeon>:/back.png</activeon>:/back_arrow_14447.png</iconset>
+   </property>
+   <property name="text">
+    <string>Last</string>
+   </property>
+   <property name="toolTip">
+    <string>Previous Image</string>
+   </property>
+  </action>
+  <action name="actionNext">
+   <property name="icon">
+    <iconset resource="Icons/Icons.qrc">
+     <normaloff>:/next_arrow_14440.png</normaloff>
+     <activeon>:/forward.png</activeon>:/next_arrow_14440.png</iconset>
+   </property>
+   <property name="text">
+    <string>Next</string>
+   </property>
+   <property name="toolTip">
+    <string>Next Image</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="icon">
+    <iconset>
+     <activeon>:/settings.png</activeon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Settings</string>
+   </property>
+   <property name="toolTip">
+    <string>Settings</string>
+   </property>
+  </action>
+  <action name="actionLanguages">
+   <property name="icon">
+    <iconset resource="Icons/Icons.qrc">
+     <normaloff>:/global.png</normaloff>:/global.png</iconset>
+   </property>
+   <property name="text">
+    <string>Languages</string>
+   </property>
+   <property name="toolTip">
+    <string>Choose your language</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="icon">
+    <iconset resource="Icons/Icons.qrc">
+     <normaloff>:/info.png</normaloff>:/info.png</iconset>
+   </property>
+   <property name="text">
+    <string>About</string>
+   </property>
+   <property name="toolTip">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionCamera">
+   <property name="icon">
+    <iconset resource="Icons/Icons.qrc">
+     <normaloff>:/camera.png</normaloff>:/camera.png</iconset>
+   </property>
+   <property name="text">
+    <string>Camera</string>
+   </property>
+   <property name="toolTip">
+    <string>Open Camera</string>
+   </property>
+  </action>
+  <action name="actionOpen_a_Folder">
+   <property name="icon">
+    <iconset resource="Icons/Icons.qrc">
+     <normaloff>:/folder.png</normaloff>:/folder.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open a Folder</string>
+   </property>
+  </action>
+  <action name="actionOpen_a_Image">
+   <property name="icon">
+    <iconset resource="Icons/Icons.qrc">
+     <normaloff>:/images.png</normaloff>:/images.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open a Image</string>
+   </property>
+  </action>
+  <action name="actionScan">
+   <property name="icon">
+    <iconset resource="Icons/Icons.qrc">
+     <normaloff>:/opencv_logo_icon_170887.png</normaloff>:/opencv_logo_icon_170887.png</iconset>
+   </property>
+   <property name="text">
+    <string>Scan</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="Icons/Icons.qrc"/>
+  <include location="Icons/Icons.qrc"/>
+ </resources>
+ <connections/>
+</ui>

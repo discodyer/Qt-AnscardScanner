@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/">
+        <file>back.png</file>
+        <file>camera.png</file>
+        <file>dustbin.png</file>
+        <file>error.png</file>
+        <file>folder.png</file>
+        <file>forward.png</file>
+        <file>global.png</file>
+        <file>Icons.qrc</file>
+        <file>images.png</file>
+        <file>info.png</file>
+        <file>OK.png</file>
+        <file>settings.png</file>
+        <file>back_arrow_14447.png</file>
+        <file>check_14413.png</file>
+        <file>download_arrow_14460.png</file>
+        <file>next_arrow_14440.png</file>
+        <file>opencv_logo_icon_170887.png</file>
+        <file>refresh_arrows_14418.png</file>
+    </qresource>
+</RCC>
