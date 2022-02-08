@@ -1,0 +1,5 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="i18n">
+<file alias="ReaderUI_zh_CN.qm">/home/cody/Project/AnswerCardReader/qt/ReaderUI/build-ReaderUI-Desktop_Qt_6_2_3_GCC_64bit-Debug/.qm/ReaderUI_zh_CN.qm</file>
+</qresource>
+</RCC>

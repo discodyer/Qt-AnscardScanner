@@ -55,3 +55,9 @@ void MainWindow::on_actionOpen_a_Image_triggered()
     MainWindow::on_actionOpen_triggered();
 }
 
+
+void MainWindow::on_actionScan_triggered()
+{
+
+}
+

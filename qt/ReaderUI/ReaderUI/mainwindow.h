@@ -36,6 +36,8 @@ private slots:
 
     void on_actionOpen_a_Image_triggered();
 
+    void on_actionScan_triggered();
+
 private:
     Ui::MainWindow *ui;
     Mat src;

@@ -129,6 +129,7 @@
    <addaction name="actionPrevious"/>
    <addaction name="actionNext"/>
    <addaction name="actionCamera"/>
+   <addaction name="actionScan"/>
    <addaction name="actionSettings"/>
   </widget>
   <action name="actionOpen">
