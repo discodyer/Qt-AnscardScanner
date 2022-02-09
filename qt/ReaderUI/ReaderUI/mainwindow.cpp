@@ -247,8 +247,8 @@ void MainWindow::on_actionOpen_triggered()
     warpPerspective(src, transedImages, warpmatrix, transedImages.size()); //透视变换
     //原文链接：https://blog.csdn.net/plSong_CSDN/article/details/93743821
 
-    prsdImg = QImage((const unsigned char*)(transedImages.data),transedImages.cols,transedImages.rows,transedImages.step,  QImage::Format_RGB888);
-    ui->labProcessedImage->setPixmap( QPixmap::fromImage(prsdImg));//显示edged处理后的图像
+//    prsdImg = QImage((const unsigned char*)(transedImages.data),transedImages.cols,transedImages.rows,transedImages.step,  QImage::Format_RGB888);
+//    ui->labProcessedImage->setPixmap( QPixmap::fromImage(prsdImg));//显示edged处理后的图像
 
 //*************透视变换******************
 
@@ -294,23 +294,61 @@ void MainWindow::on_actionOpen_triggered()
         }
     }
 
-    std::sort(questionCnts.begin(), questionCnts.end(), TopToBottom);
+    std::sort(questionCnts.begin(), questionCnts.end(), TopToBottom);//轮廓排序
     //std::sort(questionCnts.begin(), questionCnts.end(), LeftToRight);
-
-    Mat drawing = Mat::zeros(transedImages.size(), CV_8UC3);
-    for (int i = 0; i<5;i++){
-        Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255));
-        drawContours(drawing, questionCnts, i, color, 2, 8, hierarchy, 0, Point());
+    for (int i=0;i<25 ; i+=5 ) {
+        std::sort(questionCnts.begin()+i, questionCnts.begin()+i+5, LeftToRight);
     }
-    imshow("www",drawing);
 
+//    Mat drawing = Mat::zeros(transedImages.size(), CV_8UC3);
+//    for (int i = 0; i<6;i++){
+//        Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255));
+//        drawContours(drawing, questionCnts, i, color, 2, 8, hierarchy, 0, Point());
+//    }
+    //imshow("www",drawing);
 
+//    prsdImg = QImage((const unsigned char*)(drawing.data),drawing.cols,drawing.rows,drawing.step,  QImage::Format_RGB888);
+//    ui->labProcessedImage->setPixmap( QPixmap::fromImage(prsdImg));//显示处理后的图像
 
 
 
 //*************对透视变换结果进行处理***************
 
+//***************读取答案*******************
 
+    int ANSKEY[]= {2,10,11,19,22};
+    int correct = 0;
+    for (int i=0;i<25;i++ ) {
+        Mat mask = Mat::zeros(transedImages.size(), CV_8UC1);
+        Mat masked;
+        cv::drawContours(mask, questionCnts, i, Scalar(255,255,255), -1);
+        //imshow("mask",mask);
+        bitwise_and(threshContours, threshContours, masked, mask);
+        int total = countNonZero(masked);
+        cout<<i+1<<" "<<total<<endl;
+        if ((total>450) and (ANSKEY[int(i/5)]==i+1)){
+            correct++;
+            drawContours(transedImages, questionCnts, i, Scalar(0,255,0), 2, 8, hierarchy, 0, Point());
+            continue;
+        }else if((total<450) and ANSKEY[int(i/5)]==i+1){
+            drawContours(transedImages, questionCnts, i, Scalar(0,0,255), 2, 8, hierarchy, 0, Point());
+            continue;
+        }else if(total>450 and (ANSKEY[int(i/5)]!=i+1)){
+            drawContours(transedImages, questionCnts, i, Scalar(255,0,0), 2, 8, hierarchy, 0, Point());
+            continue;
+        }
+    }
+    std::string text = "Score: " + to_string(float(correct)/float(5)*100);
+    cv::Point origin;
+    origin.x=10;
+    origin.y=50;
+    cv::putText(transedImages, text, origin, FONT_HERSHEY_SIMPLEX, 2, cv::Scalar(0, 255, 255), 2, 8, 0);
+    prsdImg = QImage((const unsigned char*)(transedImages.data),transedImages.cols,transedImages.rows,transedImages.step,  QImage::Format_RGB888);
+    ui->labProcessedImage->setPixmap( QPixmap::fromImage(prsdImg));//显示处理后的图像
+
+
+
+//***************读取答案*******************
 
 }
 
