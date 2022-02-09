@@ -7,9 +7,13 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/opencv.hpp>
 #include <vector>
+#include <opencv2/core.hpp>
+#include <cmath>
 
 using namespace cv;
 using namespace std;
+
+RNG rng(12345);
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -28,6 +32,18 @@ void MainWindow::on_actionSettings_triggered()
 {
     Settings *v = new Settings();
     v->show();
+}
+
+bool TopToBottom ( std::vector<cv::Point> contour1, std::vector<cv::Point> contour2 ) {
+    double i = boundingRect(cv::Mat(contour1)).y;
+    double j = boundingRect(cv::Mat(contour2)).y;
+    return (i<j);
+}
+
+bool LeftToRight ( std::vector<cv::Point> contour1, std::vector<cv::Point> contour2 ) {
+    double i = boundingRect(cv::Mat(contour1)).x;
+    double j = boundingRect(cv::Mat(contour2)).x;
+    return (i<j);
 }
 
 void MainWindow::on_actionOpen_triggered()
@@ -89,11 +105,6 @@ void MainWindow::on_actionOpen_triggered()
 
     cv::findContours(findCont, contours, hierarchy, RETR_LIST, CHAIN_APPROX_SIMPLE);
     cout << "contous.size:" << contours.size() << endl;
-
-
-//    vector<vector<Point>> cnts;
-//    cv::sort (contours, cnts, );
-
 
     //轮廓绘制
     int width = src.cols;
@@ -242,6 +253,58 @@ void MainWindow::on_actionOpen_triggered()
 //*************透视变换******************
 
 //*************对透视变换结果进行处理***************
+
+    Mat thresh;
+    Mat transedImage_Copy = transedImages;
+    cvtColor(transedImage_Copy, transedImage_Copy, COLOR_BGR2GRAY);
+    threshold(transedImage_Copy, thresh, 0, 255, THRESH_BINARY_INV | THRESH_OTSU);
+    //imshow("thresh", thresh);
+
+    Mat threshContours = thresh;
+    vector<vector<Point>> cnts;
+    findContours(threshContours, cnts, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
+    drawContours(threshContours, cnts, -1, Scalar(0,0,255), 3);
+    //imshow("cnts", threshContours);
+
+    vector<vector<Point>> questionCnts;
+//    std::vector<std::vector<cv::Point> > questionCnts;
+//    vector<Rect> questionCnts;
+//    vector<Rect> ploy_rects(cnts.size());
+//    vector<Point2f> ccs(cnts.size());
+//    vector<float> radius(cnts.size());
+
+//    vector<RotatedRect> minRects(cnts.size());
+//    vector<RotatedRect> myellipse(cnts.size());
+
+//    for (size_t i = 0; i < cnts.size(); i++) {
+//        approxPolyDP(Mat(contours[i]), questionCnts[i], 3, true);
+//        ploy_rects[i] = boundingRect(questionCnts[i]);
+//        minEnclosingCircle(questionCnts[i], ccs[i], radius[i]);
+//        if (questionCnts[i].size() > 5) {
+//            myellipse[i] = fitEllipse(questionCnts[i]);
+//            minRects[i] = minAreaRect(questionCnts[i]);
+//        }
+//    }
+    vector<Rect> ploy_rects;
+    for (size_t i = 0; i < cnts.size(); i++) {
+        cv::Rect exRect = boundingRect(cnts[i]);
+        float arc = exRect.width/float(exRect.height);
+        if(exRect.width>20 and exRect.height>20 and arc >= 0.9 and arc <= 1.1){
+            questionCnts.push_back(cnts[i]);
+        }
+    }
+
+    std::sort(questionCnts.begin(), questionCnts.end(), TopToBottom);
+    //std::sort(questionCnts.begin(), questionCnts.end(), LeftToRight);
+
+    Mat drawing = Mat::zeros(transedImages.size(), CV_8UC3);
+    for (int i = 0; i<5;i++){
+        Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255));
+        drawContours(drawing, questionCnts, i, color, 2, 8, hierarchy, 0, Point());
+    }
+    imshow("www",drawing);
+
+
 
 
 
