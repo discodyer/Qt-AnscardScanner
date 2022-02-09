@@ -37,9 +37,15 @@ void MainWindow::on_actionOpen_triggered()
     //std::string name = code->fromUnicode(img_name).data();
     //QTextCodec *code = QTextCodec::codecForName("gb18030");
     //std::string name = code->fromUnicode(img_name).data();
-    if(img_name.length()<=0)return;
+    if(img_name.length()<=0){
+        fprintf(stderr, "Can not load image !");
+        return;
+    }
+
     //imread的第二个参数：读取4通道的png图像。其中第四个通道的数据类型和其他通道的一样，都是uchar型，完全透明为0，否则为255
-    src=imread(img_name.toUtf8().data());//opencv 读取图像数据
+    //src=imread(img_name.toUtf8().data());//opencv 读取图像数据
+    cv::Mat src = cv::imread(img_name.toUtf8().data());
+    cv::resize(src,src,cv::Size(src.cols/4*4,src.rows/4*4));
 
 
     //toAscii()返回8位描述的string,为QByteArray,data()表示返回QByteArray的指针，QByteArray为字节指针，古老的toascii，我们使用toUtf8。网上有toLatin1，但是好像会出错
@@ -52,7 +58,7 @@ void MainWindow::on_actionOpen_triggered()
 //**************预处理*******************
     Mat inputImg;
     cvtColor( src, inputImg, COLOR_BGR2RGB );//https://github.com/IntelRealSense/librealsense/issues/1634
-    img = QImage( (const unsigned char*)(inputImg.data), inputImg.cols, inputImg.rows, QImage::Format_RGB888 );
+    img = QImage( (const unsigned char*)(src.data), src.cols, src.rows, QImage::Format_RGB888 );
     ui->labRawImage->setPixmap( QPixmap::fromImage(img));//显示原始图像
     //ui->labRawImage->resize( ui->labRawImage->pixmap()->size());
 
@@ -71,8 +77,8 @@ void MainWindow::on_actionOpen_triggered()
 
     Mat edged;
     Canny(blur, edged, 75, 200);
-    prsdImg = QImage((const unsigned char*)(edged.data),edged.cols,edged.rows,edged.step,  QImage::Format_Indexed8);
-    ui->labProcessedImage->setPixmap( QPixmap::fromImage(prsdImg));//显示edged处理后的图像
+//    prsdImg = QImage((const unsigned char*)(edged.data),edged.cols,edged.rows,edged.step,  QImage::Format_Indexed8);
+//    ui->labProcessedImage->setPixmap( QPixmap::fromImage(prsdImg));//显示edged处理后的图像
 
 //************预处理****************
 
@@ -82,15 +88,164 @@ void MainWindow::on_actionOpen_triggered()
     vector<Vec4i> hierarchy;
 
     cv::findContours(findCont, contours, hierarchy, RETR_LIST, CHAIN_APPROX_SIMPLE);
-    vector<vector<Point>> cnts;
-    cv::sort (contours, cnts, contourArea())
+    cout << "contous.size:" << contours.size() << endl;
 
 
+//    vector<vector<Point>> cnts;
+//    cv::sort (contours, cnts, );
 
+
+    //轮廓绘制
+    int width = src.cols;
+    int height = src.rows;
+    Mat drawImage = Mat::zeros(src.size(), CV_8UC3);
+    cout << contours.size() << endl;
+    for (size_t t = 0; t < contours.size(); t++)
+    {
+        Rect rect = boundingRect(contours[t]);
+        if (rect.width > width / 2 && rect.height > height / 2 && rect.width<width-5 && rect.height<height-5)
+        {
+            drawContours(drawImage, contours, static_cast<int>(t), Scalar(0, 0, 255), 2, 8, hierarchy, 0, Point(0, 0));
+        }
+    }
+    //imshow("contours", drawImage);//显示找到的轮廓
+
+    //直线检测
+    vector<Vec4i> lines;
+    Mat contoursImg;
+    int accu = min(width*0.2, height*0.2);
+    cvtColor(drawImage, contoursImg, COLOR_BGR2GRAY);
+    //imshow("contours", contoursImg);
+
+    Mat linesImage = Mat::zeros(src.size(), CV_8UC3);
+    HoughLinesP(contoursImg, lines, 1, CV_PI/180.0, accu, accu, 0);
+    for (size_t t = 0; t < lines.size(); t++)
+    {
+        Vec4i ln = lines[t];
+        line(linesImage, Point(ln[0], ln[1]), Point(ln[2], ln[3]), Scalar(0, 0, 255), 2, 8, 0);//绘制直线
+    }
+    cout << "number of lines:"<<lines.size() << endl;
+    //imshow("linesImages", linesImage);
+
+    //寻找与定位上下 左右 四条直线
+    int deltah = 0; //高度差
+    int deltaw = 0; //宽度差
+    Vec4i topLine, bottomLine; //直线定义
+    Vec4i rightLine, leftLine;
+
+    for (int i = 0; i < lines.size(); i++)
+    {
+        Vec4i ln = lines[i];
+        /*
+        Opencv中的累计霍夫变换HoughLinesP()，输出的是一个Vector of Vec4i，
+        Vector每个元素代表一条直线，是由一个4元浮点数构成，
+        前两个一组x_1,y_1，后两个一组x_2,y_2，代表了图像中直线的起始点和结束点。
+        */
+        deltah = abs(ln[3] - ln[1]); //计算高度差(y2-y1)
+        //topLine
+        if (ln[3] < height / 2.0 && ln[1] < height / 2.0 && deltah < accu - 1)
+        {
+            topLine = lines[i];
+        }
+        //bottomLine
+        if (ln[3] > height / 2.0 && ln[1] >height / 2.0 && deltah < accu - 1)
+        {
+            bottomLine = lines[i];
+        }
+
+        deltaw = abs(ln[2] - ln[0]); //计算宽度差(x2-x1)
+        //leftLine
+        if (ln[0] < height / 2.0 && ln[2] < height / 2.0 && deltaw < accu - 1)
+        {
+            leftLine = lines[i];
+        }
+        //rightLine
+        if (ln[0] > width / 2.0 && ln[2] >width / 2.0 && deltaw < accu - 1)
+        {
+            rightLine = lines[i];
+        }
+    }
+
+    // 打印四条线的坐标
+    cout << "topLine : p1(x,y)= " << topLine[0] << "," << topLine[1] << "; p2(x,y)= " << topLine[2] <<  "," << topLine[3] << endl;
+    cout << "bottomLine : p1(x,y)= " << bottomLine[0] << "," << bottomLine[1] << "; p2(x,y)= " << bottomLine[2] <<  "," << bottomLine[3] << endl;
+    cout << "leftLine : p1(x,y)= " << leftLine[0] << "," << leftLine[1] << "; p2(x,y)= " << leftLine[2] <<  "," << leftLine[3] << endl;
+    cout << "rightLine : p1(x,y)= " << rightLine[0] << "," << rightLine[1] << "; p2(x,y)= " << rightLine[2] << "," << rightLine[3] << endl;
+
+    //拟合四条直线
+    float k1, k2, k3, k4, c1, c2, c3, c4;
+    k1 = float(topLine[3] - topLine[1]) / float(topLine[2] - topLine[0]);
+    c1 = topLine[1] - k1*topLine[0];
+
+    k2 = float(bottomLine[3] - bottomLine[1]) / float(bottomLine[2] - bottomLine[0]);
+    c2 = bottomLine[1] - k2*bottomLine[0];
+
+    k3 = float(leftLine[3] - leftLine[1]) / float(leftLine[2] - leftLine[0]);
+    c3 = leftLine[1] - k3*leftLine[0];
+
+    k4 = float(rightLine[3] - rightLine[1]) / float(rightLine[2] - rightLine[0]);
+    c4 = rightLine[1] - k4*rightLine[0];
 //*************轮廓检测******************
 
+//*************透视变换******************
+
+    //求四个角点,
+    Point p1;//topLine  leftLine 左上角
+    p1.x = static_cast<int>(c1 - c3) / k3 - k1;
+    p1.y = k1*p1.x + c1;
+
+    Point p2;//topLine  rightLine 右上角
+    p2.x = static_cast<int>(c1 - c4) / k4 - k1;
+    p2.y = k1*p2.x + c1;
+
+    Point p3;//bottomLine  leftLine 左下角
+    p3.x = static_cast<int>(c2 - c3) / k3 - k2;
+    p3.y = k2*p3.x + c2;
+
+    Point p4;//bottomLine  rightLine 右下角
+    p4.x = static_cast<int>(c2 - c4) / k4 - k2;
+    p4.y = k2*p4.x + c2;
+
+    cout << "Point p1: (" << p1.x << "," << p1.y << ")" << endl;
+    cout << "Point p2: (" << p2.x << "," << p2.y << ")" << endl;
+    cout << "Point p3: (" << p3.x << "," << p3.y << ")" << endl;
+    cout << "Point p4: (" << p4.x << "," << p4.y << ")" << endl;
+
+    //显示四个点
+    circle(linesImage, p1, 2, Scalar(0, 255, 0), 2);
+    circle(linesImage, p2, 2, Scalar(0, 255, 0), 2);
+    circle(linesImage, p3, 2, Scalar(0, 255, 0), 2);
+    circle(linesImage, p4, 2, Scalar(0, 255, 0), 2);
+    //imshow("find four points", linesImage);
+
+    //透视变换
+    vector<Point2f> src_corners(4);
+    src_corners[0] = p1;
+    src_corners[1] = p2;
+    src_corners[2] = p3;
+    src_corners[3] = p4;
+
+    Mat transedImages = Mat::zeros(500, 400, CV_8UC3);
+    vector<Point2f> dst_corners(4);
+    dst_corners[0] = Point(0, 0);
+    dst_corners[1] = Point(transedImages.cols, 0);
+    dst_corners[2] = Point(0, transedImages.rows);
+    dst_corners[3] = Point(transedImages.cols, transedImages.rows);
+
+    Mat warpmatrix = getPerspectiveTransform(src_corners, dst_corners); //获取透视变换矩阵
+    warpPerspective(src, transedImages, warpmatrix, transedImages.size()); //透视变换
+    //原文链接：https://blog.csdn.net/plSong_CSDN/article/details/93743821
+
+    prsdImg = QImage((const unsigned char*)(transedImages.data),transedImages.cols,transedImages.rows,transedImages.step,  QImage::Format_RGB888);
+    ui->labProcessedImage->setPixmap( QPixmap::fromImage(prsdImg));//显示edged处理后的图像
+
+//*************透视变换******************
+
+//*************对透视变换结果进行处理***************
 
 
+
+//*************对透视变换结果进行处理***************
 
 
 
