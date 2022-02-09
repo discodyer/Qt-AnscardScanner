@@ -32,7 +32,7 @@ private slots:
 
     void on_actionOpen_triggered();
 
-    void on_actionOpen_a_Folder_triggered();
+    //void on_actionOpen_a_Folder_triggered();
 
     void on_actionOpen_a_Image_triggered();
 
@@ -43,6 +43,8 @@ private:
     Mat src;
     QImage img;
     QString img_name;
+    //Mat cvImg;
+    QImage prsdImg;
 
 };
 #endif // MAINWINDOW_H
