@@ -27,12 +27,13 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+
 private slots:
     void on_actionSettings_triggered();
 
     void on_actionOpen_triggered();
 
-    //void on_actionOpen_a_Folder_triggered();
+    void opencv_scan(cv::Mat * inputp,cv::Mat * outputp);
 
     void on_actionOpen_a_Image_triggered();
 
@@ -43,8 +44,8 @@ private:
     Mat src;
     QImage img;
     QString img_name;
-    //Mat cvImg;
     QImage prsdImg;
+
 
 };
 #endif // MAINWINDOW_H

@@ -16,8 +16,32 @@ public:
     ~Settings();
 
 
+private slots:
+    void on_btnApply_clicked();
+
+    void on_cbImshowGray_clicked(bool checked);
+
+    void on_cbImshowGrayBlur_clicked(bool checked);
+
+    void on_cbImshowEdged_clicked(bool checked);
+
+    void on_cbImshowAllContours_clicked(bool checked);
+
+    void on_cbImshowOutLineCnts_clicked(bool checked);
+
+    void on_cbImshowFourLines_clicked(bool checked);
+
+    void on_cbImshowFindFourPoints_clicked(bool checked);
+
+    void on_cbImshowFourPointThresh_clicked(bool checked);
+
+    void on_cbImshowCnts_clicked(bool checked);
+
+    void on_cbImshowMask_clicked(bool checked);
+
 private:
     Ui::Settings *ui;
+
 
 };
 
