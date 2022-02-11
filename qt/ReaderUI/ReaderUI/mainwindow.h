@@ -39,6 +39,8 @@ private slots:
 
     void on_actionScan_triggered();
 
+    void on_actionCamera_triggered();
+
 private:
     Ui::MainWindow *ui;
     Mat src;

@@ -5,7 +5,7 @@
 
 extern bool setIf[SET_IF_ARRYLEN];
 extern bool tmpSetIf[SET_IF_ARRYLEN];
-
+extern bool isCameraUsed;
 
 Settings::Settings(QWidget *parent) :
     QWidget(parent),
@@ -17,6 +17,13 @@ Settings::Settings(QWidget *parent) :
     ui->cbImshowGray->setChecked(tmpSetIf[0]);
     ui->cbImshowGrayBlur->setChecked(tmpSetIf[1]);
     ui->cbImshowEdged->setChecked(tmpSetIf[2]);
+    ui->cbImshowAllContours->setChecked(tmpSetIf[3]);
+    ui->cbImshowOutLineCnts->setChecked(tmpSetIf[4]);
+    ui->cbImshowFourLines->setChecked(tmpSetIf[5]);
+    ui->cbImshowFindFourPoints->setChecked(tmpSetIf[6]);
+    ui->cbImshowFourPointThresh->setChecked(tmpSetIf[7]);
+    ui->cbImshowCnts->setChecked(tmpSetIf[8]);
+    ui->cbImshowMask->setChecked(tmpSetIf[9]);
 
 }
 

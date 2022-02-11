@@ -209,6 +209,15 @@
    </property>
   </action>
   <action name="actionCamera">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="Icons/Icons.qrc">
      <normaloff>:/camera.png</normaloff>:/camera.png</iconset>

@@ -42,6 +42,8 @@ bool tmpSetIf[SET_IF_ARRYLEN]={
     false //9 imshow mask
 };
 
+bool isCameraUsed=false;
+
 RNG rng(12345);//Random Color
 
 bool TopToBottom ( std::vector<cv::Point> contour1, std::vector<cv::Point> contour2 ) {
@@ -491,5 +493,13 @@ void MainWindow::on_actionOpen_a_Image_triggered()
 void MainWindow::on_actionScan_triggered()
 {
 
+}
+
+
+
+void MainWindow::on_actionCamera_triggered()
+{
+    isCameraUsed=!isCameraUsed;
+    ui->actionCamera->setChecked(isCameraUsed);
 }
 
