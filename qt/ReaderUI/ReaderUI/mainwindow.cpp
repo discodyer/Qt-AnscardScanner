@@ -10,6 +10,7 @@
 #include <opencv2/core.hpp>
 #include <cmath>
 #include <QMessageBox>
+#include <QTranslator>
 
 using namespace cv;
 using namespace std;
@@ -63,6 +64,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    loadLanguage();
+
 }
 
 MainWindow::~MainWindow()
@@ -70,9 +73,20 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::loadLanguage(){
+    QTranslator translator;
+    //if (index == 0){
+        translator.load(":/../ReaderUI_zh_CN.qm");
+    //}else if (index == 1){
+    //    translator.load(":/../ReaderUI_zh_CN.qm");
+    //}
+    qApp->installTranslator(&translator);
+    ui->retranslateUi(this);
+}
+
 void MainWindow::opencv_scan(cv::Mat * inputp,cv::Mat * outputp){
 
-//**************预处理*******************
+//**************预处理***************index****
     Mat inputImg=*inputp;
 
     Mat gray;//灰度处理后的图像
@@ -86,23 +100,17 @@ void MainWindow::opencv_scan(cv::Mat * inputp,cv::Mat * outputp){
         return;
     }
 
-//    //prsdImg = QImage( (const unsigned char*)(gray.data), gray.cols, gray.rows, QImage::Format_RGB888 );
-//    prsdImg = QImage((const unsigned char*)(gray.data),gray.cols,gray.rows,gray.step,  QImage::Format_Indexed8);
-//    ui->labProcessedImage->setPixmap( QPixmap::fromImage(prsdImg));//显示灰度处理后的图像
-
     Mat blur;
     cv::GaussianBlur(gray, blur, cv::Size(5,5) , 0 );
     if(setIf[1]&&!blur.empty()){
         imshow("gray + blur",blur);
     }else if(blur.empty()){
-        cout<<"Error: mainwindow.cpp:128 Step cv::GaussianBlur 'turn gray to blur' blur.empty()"<<endl;
+        cout<<"Error: mainwindow.cpp:128 Step indexcv::GaussianBlur 'turn gray to blur' blur.empty()"<<endl;
         QMessageBox::critical(this, tr("Error"),  tr("Error: mainwindow.cpp:128 \nStep cv::GaussianBlur 'turn gray to blur' blur.empty()"),
                               QMessageBox::Discard,  QMessageBox::Discard);
         return;
     }
 
-//    prsdImg = QImage((const unsigned char*)(blur.data),blur.cols,blur.rows,blur.step,  QImage::Format_Indexed8);
-//    ui->labProcessedImage->setPixmap( QPixmap::fromImage(prsdImg));//显示blur处理后的图像
 
     Mat edged;
     Canny(blur, edged, 75, 200);
@@ -114,8 +122,7 @@ void MainWindow::opencv_scan(cv::Mat * inputp,cv::Mat * outputp){
                               QMessageBox::Discard,  QMessageBox::Discard);
         return;
     }
-//    prsdImg = QImage((const unsigned char*)(edged.data),edged.cols,edged.rows,edged.step,  QImage::Format_Indexed8);
-//    ui->labProcessedImage->setPixmap( QPixmap::fromImage(prsdImg));//显示edged处理后的图像
+
 
 //************预处理****************
 
@@ -311,8 +318,6 @@ void MainWindow::opencv_scan(cv::Mat * inputp,cv::Mat * outputp){
     warpPerspective(inputImg, transedImages, warpmatrix, transedImages.size()); //透视变换
     //原文链接：https://blog.csdn.net/plSong_CSDN/article/details/93743821
 
-//    prsdImg = QImage((const unsigned char*)(transedImages.data),transedImages.cols,transedImages.rows,transedImages.step,  QImage::Format_RGB888);
-//    ui->labProcessedImage->setPixmap( QPixmap::fromImage(prsdImg));//显示edged处理后的图像
 
 //*************透视变换******************
 
@@ -446,10 +451,6 @@ void MainWindow::on_actionSettings_triggered()
 void MainWindow::on_actionOpen_triggered()
 {
     img_name = QFileDialog::getOpenFileName( this, tr("Open Image"), ".",tr("Image Files(*.png *.jpg *.jpeg *.bmp)"));
-    //QTextCodec *code = QTextCodec::codecForName("gb18030");
-    //std::string name = code->fromUnicode(img_name).data();
-    //QTextCodec *code = QTextCodec::codecForName("gb18030");
-    //std::string name = code->fromUnicode(img_name).data();
     if(img_name.length()<=0){
         fprintf(stderr, "Can not load image !");
         return;
@@ -501,5 +502,11 @@ void MainWindow::on_actionCamera_triggered()
 {
     isCameraUsed=!isCameraUsed;
     ui->actionCamera->setChecked(isCameraUsed);
+}
+
+
+void MainWindow::on_actionLanguages_triggered()
+{
+    loadLanguage();
 }
 

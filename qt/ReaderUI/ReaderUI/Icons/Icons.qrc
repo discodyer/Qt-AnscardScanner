@@ -18,5 +18,6 @@
         <file>next_arrow_14440.png</file>
         <file>opencv_logo_icon_170887.png</file>
         <file>refresh_arrows_14418.png</file>
+        <file>../ReaderUI_zh_CN.qm</file>
     </qresource>
 </RCC>
