@@ -32,7 +32,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
-    Icons/Icons.qrc
+    Icons/Icons.qrc \
+    lang.qrc
 
 unix: CONFIG += link_pkgconfig
 unix: PKGCONFIG += opencv4

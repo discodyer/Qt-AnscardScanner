@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>ReaderUI_zh_CN.qm</file>
+    </qresource>
+</RCC>

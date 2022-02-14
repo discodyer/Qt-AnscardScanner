@@ -64,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    loadLanguage();
+    //loadLanguage();
 
 }
 
@@ -73,16 +73,16 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::loadLanguage(){
-    QTranslator translator;
-    //if (index == 0){
-        translator.load(":/../ReaderUI_zh_CN.qm");
-    //}else if (index == 1){
-    //    translator.load(":/../ReaderUI_zh_CN.qm");
-    //}
-    qApp->installTranslator(&translator);
-    ui->retranslateUi(this);
-}
+//void MainWindow::loadLanguage(){
+//    QTranslator translator;
+//    //if (index == 0){
+//        translator.load(":/../ReaderUI_zh_CN.qm");
+//    //}else if (index == 1){
+//    //    translator.load(":/../ReaderUI_zh_CN.qm");
+//    //}
+//    qApp->installTranslator(&translator);
+//    ui->retranslateUi(this);
+//}
 
 void MainWindow::opencv_scan(cv::Mat * inputp,cv::Mat * outputp){
 
@@ -507,6 +507,6 @@ void MainWindow::on_actionCamera_triggered()
 
 void MainWindow::on_actionLanguages_triggered()
 {
-    loadLanguage();
+    //loadLanguage();
 }
 

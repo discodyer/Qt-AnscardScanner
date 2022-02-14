@@ -6,23 +6,16 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QApplication app(argc, argv);
 
     QTranslator translator;
-    translator.load(":/../ReaderUI_zh_CN.qm");
-    a.installTranslator(&translator);
-//    const QStringList uiLanguages = QLocale::system().uiLanguages();
-//    for (const QString &locale : uiLanguages) {
-//        const QString baseName = "ReaderUI_" + QLocale(locale).name();
-//        if (translator.load(":/i18n/" + baseName)) {
-//            a.installTranslator(&translator);
-//            break;
-//        }
+//    if (translator.load(QLocale::system(), u"ReaderUI"_qs, u"_"_qs, u":/i18n"_qs)){
+//        app.installTranslator(&translator);
 //    }
-//    QFont font = a.font();
-//    font.setPixelSize(12);
-//    a.setFont(font);
+//    app.installTranslator(&translator);
+    translator.load(":/ReaderUI_zh_CN.qm");
+    app.installTranslator(&translator);
     MainWindow w;
     w.show();
-    return a.exec();
+    return app.exec();
 }

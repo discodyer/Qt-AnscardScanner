@@ -41,7 +41,7 @@ private slots:
 
     void on_actionCamera_triggered();
 
-    void loadLanguage();
+//    void loadLanguage();
 
     void on_actionLanguages_triggered();
 
