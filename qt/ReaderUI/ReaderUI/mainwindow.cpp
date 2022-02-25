@@ -43,7 +43,9 @@ bool tmpSetIf[SET_IF_ARRYLEN]={
     false //9 imshow mask
 };
 
-bool isCameraUsed=false;
+bool isCameraUsed= false;
+
+int cameraNumber= 0;
 
 RNG rng(12345);//Random Color
 
@@ -502,6 +504,7 @@ void MainWindow::on_actionCamera_triggered()
 {
     isCameraUsed=!isCameraUsed;
     ui->actionCamera->setChecked(isCameraUsed);
+
 }
 
 

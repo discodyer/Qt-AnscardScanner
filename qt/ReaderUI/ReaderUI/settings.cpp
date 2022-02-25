@@ -1,11 +1,14 @@
 #include "settings.h"
 #include "ui_settings.h"
+#include <QGuiApplication>
 
 #define SET_IF_ARRYLEN 10
 
 extern bool setIf[SET_IF_ARRYLEN];
 extern bool tmpSetIf[SET_IF_ARRYLEN];
 extern bool isCameraUsed;
+extern int cameraNumber;
+
 
 Settings::Settings(QWidget *parent) :
     QWidget(parent),
@@ -24,6 +27,14 @@ Settings::Settings(QWidget *parent) :
     ui->cbImshowFourPointThresh->setChecked(tmpSetIf[7]);
     ui->cbImshowCnts->setChecked(tmpSetIf[8]);
     ui->cbImshowMask->setChecked(tmpSetIf[9]);
+
+    if(isCameraUsed){
+        ui->groupCameraSettings->setTitle(tr("Camera is in use"));
+        ui->groupCameraSettings->setEnabled(true);
+    }else{
+        ui->groupCameraSettings->setTitle(tr("Camera is not in use"));
+        ui->groupCameraSettings->setEnabled(false);
+    }
 
 }
 
